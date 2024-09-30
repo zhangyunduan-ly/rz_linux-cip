@@ -269,7 +269,7 @@
 	dmas = <&dmac 0x2e99>, <&dmac 0x2e9a>;
 	dma-names = "tx", "rx";
 
-	status = "okay";
+	status = "disabled";
 };
 
 &usb2_phy0 {
