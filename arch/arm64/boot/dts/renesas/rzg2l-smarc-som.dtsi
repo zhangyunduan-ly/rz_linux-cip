@@ -128,10 +128,8 @@
 	phy-mode = "rgmii-id";
 	status = "okay";
 
-	phy0: ethernet-phy@7 {
-		compatible = "ethernet-phy-id0022.1640",
-			     "ethernet-phy-ieee802.3-c22";
-		reg = <7>;
+	phy0: ethernet-phy@4 {
+		reg = <4>;
 		rxc-skew-psec = <2400>;
 		txc-skew-psec = <2400>;
 		rxdv-skew-psec = <0>;
@@ -146,7 +144,7 @@
 		txd3-skew-psec = <0>;
 
 		interrupt-parent = <&pinctrl>;
-		interrupts = <RZG2L_GPIO(1, 0) IRQ_TYPE_LEVEL_LOW>;
+		interrupts = <RZG2L_GPIO(44, 2) IRQ_TYPE_LEVEL_LOW>;
 	};
 };
 
@@ -157,10 +155,8 @@
 	phy-mode = "rgmii-id";
 	status = "okay";
 
-	phy1: ethernet-phy@7 {
-		compatible = "ethernet-phy-id0022.1640",
-			     "ethernet-phy-ieee802.3-c22";
-		reg = <7>;
+	phy1: ethernet-phy@6 {
+		reg = <6>;
 		rxc-skew-psec = <2400>;
 		txc-skew-psec = <2400>;
 		rxdv-skew-psec = <0>;
@@ -175,7 +171,7 @@
 		txd3-skew-psec = <0>;
 
 		interrupt-parent = <&pinctrl>;
-		interrupts = <RZG2L_GPIO(1, 1) IRQ_TYPE_LEVEL_LOW>;
+		interrupts = <RZG2L_GPIO(43, 2) IRQ_TYPE_LEVEL_LOW>;
 	};
 };
 
