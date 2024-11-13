@@ -4,6 +4,7 @@
 #include <linux/watchdog.h>
 #include <linux/jiffies.h>
 #include <linux/kernel.h>
+#include <linux/gpio.h>
 
 static struct timer_list watchdog_timer;
 static int timer_index = 0;
@@ -26,9 +27,9 @@ static void poll_timer_func(struct timer_list *t)
 
     /* feed dog */
     if (timer_index % 2) {
-        // high
+        gpio_set_value(433, 1); //high
     } else {
-        // low
+        gpio_set_value(433, 0); //low
     }
 
     /* restart watchdog timer */
@@ -51,13 +52,13 @@ static ssize_t enable_store(struct device *dev, struct device_attribute *attr, c
 
     if (!status && early_watchdog_status) {
         early_watchdog_status = 0; 
-        // gpio set high
+        gpio_set_value(433, 1); //high
         del_timer(&watchdog_timer);
     }    
     else if (status && !early_watchdog_status) {
         early_watchdog_status = status;
         timer_index = 0; 
-        // gpio set low
+        gpio_set_value(433, 0); //low
         mod_timer(&watchdog_timer, jiffies + msecs_to_jiffies(500));
     }    
 
@@ -104,7 +105,9 @@ static int __init init_early_watchdog_timer(void)
 {
     int ret;
 
-    // pr_info("Initializing early watchdog timer...\n");
+    pr_info("Initializing early watchdog timer...\n");
+
+    gpio_direction_output(433, 1);
 
     timer_setup(&watchdog_timer, poll_timer_func, 0);
 
@@ -121,6 +124,7 @@ static int __init init_early_watchdog_timer(void)
 }
 
 early_initcall(init_early_watchdog_timer);
+// module_init(init_early_watchdog_timer);
 
 static void __exit cleanup_early_watchdog_timer(void)
 {

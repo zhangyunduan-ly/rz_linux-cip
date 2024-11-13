@@ -438,7 +438,7 @@ static int st75161_setpin(void)
     ret += gpiod_direction_output(ly_st75161->A0_gpios, 1);
     ret += gpiod_direction_output(ly_st75161->CSB_gpios, 1);
     ret += gpiod_direction_output(ly_st75161->RSTB_gpios, 1);
-    ret += gpiod_direction_output(ly_st75161->BL_gpios, 0);
+    ret += gpiod_direction_output(ly_st75161->BL_gpios, 1);
 
     return ret;
 }

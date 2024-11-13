@@ -117,8 +117,6 @@ static ssize_t power_read(struct file *filp, char __user *buf, size_t count, lof
         udelay(1);
     }
 
-    pr_info("power_read cnt:%d\n", cnt);
-
     if (cnt > (DELAY_CNT * 9 / 10)) {
         uc[0] = 0x01;
         if (ly_power->rtnflag) {

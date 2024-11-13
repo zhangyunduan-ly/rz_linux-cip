@@ -28,7 +28,6 @@
 
 		i2c0 = &i2c0;
 		i2c1 = &i2c1;
-		i2c2 = &i2c2;
 
 		mmc0 = &sdhi0;
 		mmc1 = &sdhi1;
@@ -104,42 +103,35 @@
 		compatible = "gpio-leds";
 
 		emled_run {
-			gpios = <&pinctrl RZG2L_GPIO(17, 0) GPIO_ACTIVE_LOW>;
+			gpios = <&pinctrl RZG2L_GPIO(17, 0) GPIO_ACTIVE_HIGH>;
 			label = "EMLED_RUN";
 			default-state = "on";
 			linux,default-trigger = "none";
 		};
 
 		emled_alarm {
-			gpios = <&pinctrl RZG2L_GPIO(16, 1) GPIO_ACTIVE_LOW>;
+			gpios = <&pinctrl RZG2L_GPIO(16, 1) GPIO_ACTIVE_HIGH>;
 			label = "EMLED_ALARM";
 			default-state = "on";
 			linux,default-trigger = "none";
 		};
 
 		emled_comm {
-			gpios = <&pinctrl RZG2L_GPIO(17, 1) GPIO_ACTIVE_LOW>;
+			gpios = <&pinctrl RZG2L_GPIO(17, 1) GPIO_ACTIVE_HIGH>;
 			label = "EMLED_COMM";
 			default-state = "on";
 			linux,default-trigger = "none";
 		};
 
-		emled_led1 {
-			gpios = <&pinctrl RZG2L_GPIO(15, 0) GPIO_ACTIVE_LOW>;
-			label = "EMLED_LED1";
-			default-state = "on";
-			linux,default-trigger = "none";
-		};
-
 		emled_led2 {
-			gpios = <&pinctrl RZG2L_GPIO(15, 1) GPIO_ACTIVE_LOW>;
+			gpios = <&pinctrl RZG2L_GPIO(15, 1) GPIO_ACTIVE_HIGH>;
 			label = "EMLED_LED2";
 			default-state = "on";
 			linux,default-trigger = "none";
 		};
 
 		emled_led3 {
-			gpios = <&pinctrl RZG2L_GPIO(16, 0) GPIO_ACTIVE_LOW>;
+			gpios = <&pinctrl RZG2L_GPIO(16, 0) GPIO_ACTIVE_HIGH>;
 			label = "EMLED_LED3";
 			default-state = "on";
 			linux,default-trigger = "none";
@@ -148,79 +140,87 @@
 
 	keyboard {
 		compatible = "gpio-keys";
+		#address-cells = <1>;
+		#size-cells = <0>;
 		status = "okay";
 
-		key-esc {
-			interrupt-parent = <&pinctrl>;
-			interrupts = <RZG2L_GPIO(46, 0) IRQ_TYPE_LEVEL_LOW>;
-			linux,code = <KEY_ESC>;
-			debounce-interval = <10>;
-			label = "key_esc";
-		};
-
-		key-enter {
-			interrupt-parent = <&pinctrl>;
-			interrupts = <RZG2L_GPIO(46, 1) IRQ_TYPE_LEVEL_LOW>;
-			linux,code = <KEY_ENTER>;
-			debounce-interval = <10>;
-			label = "key_enter";
-		};
-
 		key-up {
+			wakeup-source;
 			interrupt-parent = <&pinctrl>;
-			interrupts = <RZG2L_GPIO(46, 2) IRQ_TYPE_LEVEL_LOW>;
+			interrupts = <RZG2L_GPIO(46, 0) IRQ_TYPE_LEVEL_HIGH>;
 			linux,code = <KEY_UP>;
 			debounce-interval = <10>;
 			label = "key_up";
 		};
 
 		key-left {
+			wakeup-source;
 			interrupt-parent = <&pinctrl>;
-			interrupts = <RZG2L_GPIO(46, 3) IRQ_TYPE_LEVEL_LOW>;
+			interrupts = <RZG2L_GPIO(46, 1) IRQ_TYPE_LEVEL_HIGH>;
 			linux,code = <KEY_LEFT>;
 			debounce-interval = <10>;
 			label = "key_left";
 		};
 
-		key-right {
+		key-down {
+			wakeup-source;
 			interrupt-parent = <&pinctrl>;
-			interrupts = <RZG2L_GPIO(1, 1) IRQ_TYPE_LEVEL_LOW>;
+			interrupts = <RZG2L_GPIO(46, 2) IRQ_TYPE_LEVEL_HIGH>;
+			linux,code = <KEY_DOWN>;
+			debounce-interval = <10>;
+			label = "key_down";
+		};
+
+		key-right {
+			wakeup-source;
+			interrupt-parent = <&pinctrl>;
+			interrupts = <RZG2L_GPIO(46, 3) IRQ_TYPE_LEVEL_HIGH>;
 			linux,code = <KEY_RIGHT>;
 			debounce-interval = <10>;
 			label = "key_right";
 		};
 
-		key-down {
+		key-enter {
+			wakeup-source;
 			interrupt-parent = <&pinctrl>;
-			interrupts = <RZG2L_GPIO(1, 0) IRQ_TYPE_LEVEL_LOW>;
-			linux,code = <KEY_DOWN>;
+			interrupts = <RZG2L_GPIO(1, 1) IRQ_TYPE_LEVEL_HIGH>;
+			linux,code = <KEY_ENTER>;
 			debounce-interval = <10>;
-			label = "key_down";
+			label = "key_enter";
+		};
+
+		key-esc {
+			wakeup-source;
+			interrupt-parent = <&pinctrl>;
+			interrupts = <RZG2L_GPIO(1, 0) IRQ_TYPE_LEVEL_HIGH>;
+			linux,code = <KEY_ESC>;
+			debounce-interval = <10>;
+			label = "key_esc";
 		};
 	};
 
 	ly_st75161 {
 		compatible = "ly-st75161";
-		lcd-A0-gpios = <&pinctrl RZG2L_GPIO(42, 2) GPIO_ACTIVE_LOW>;
-		lcd-SCLK-gpios = <&pinctrl RZG2L_GPIO(42, 3) GPIO_ACTIVE_LOW>;
-		lcd-MOSI-gpios = <&pinctrl RZG2L_GPIO(42, 4) GPIO_ACTIVE_LOW>;
-		lcd-CSB-gpios = <&pinctrl RZG2L_GPIO(5, 2) GPIO_ACTIVE_LOW>;
-		lcd-RSTB-gpios = <&pinctrl RZG2L_GPIO(4, 1) GPIO_ACTIVE_LOW>;
-		lcd-BL-gpios = <&pinctrl RZG2L_GPIO(7, 2) GPIO_ACTIVE_LOW>;
+		lcd-A0-gpios = <&pinctrl RZG2L_GPIO(18, 1) GPIO_ACTIVE_HIGH>;
+		lcd-SCLK-gpios = <&pinctrl RZG2L_GPIO(19, 1) GPIO_ACTIVE_HIGH>;
+		lcd-MOSI-gpios = <&pinctrl RZG2L_GPIO(19, 0) GPIO_ACTIVE_HIGH>;
+		lcd-CSB-gpios = <&pinctrl RZG2L_GPIO(45, 2) GPIO_ACTIVE_HIGH>;
+		lcd-RSTB-gpios = <&pinctrl RZG2L_GPIO(18, 0) GPIO_ACTIVE_HIGH>;
+		lcd-BL-gpios = <&pinctrl RZG2L_GPIO(45, 3) GPIO_ACTIVE_LOW>;
 		status = "okay";
 	};
 
 	ly_power {
 		compatible = "ly-power";
-		battery-gpios = <&pinctrl RZG2L_GPIO(14, 0) GPIO_ACTIVE_LOW>;
-		capacitor-gpios = <&pinctrl RZG2L_GPIO(39, 2) GPIO_ACTIVE_LOW>;
-		pfi-gpios = <&pinctrl RZG2L_GPIO(3, 1) GPIO_ACTIVE_LOW>;
+		battery-gpios = <&pinctrl RZG2L_GPIO(14, 0) GPIO_ACTIVE_HIGH>;
+		capacitor-gpios = <&pinctrl RZG2L_GPIO(39, 2) GPIO_ACTIVE_HIGH>;
+		pfi-gpios = <&pinctrl RZG2L_GPIO(3, 1) GPIO_ACTIVE_HIGH>;
 		status = "okay";
 	};
 
 	ly_watchdog {
 		compatible = "ly-watchdog";
-		feed-gpios = <&pinctrl RZG2L_GPIO(47, 3) GPIO_ACTIVE_LOW>;
+		feed-gpios = <&pinctrl RZG2L_GPIO(39, 1) GPIO_ACTIVE_HIGH>;
 		status = "okay";
 	};
 };
@@ -244,8 +244,11 @@
 	phy-mode = "mii";
 	status = "okay";
 
-	phy0: ethernet-phy@2 {
-		reg = <2>;
+	phy0: ethernet-phy@3 {
+		compatible = "ethernet-phy-id0022.1640",
+			     "ethernet-phy-ieee802.3-c22";
+		reg = <3>;
+		led-mode = <1>;
 		rxc-skew-psec = <2400>;
 		txc-skew-psec = <2400>;
 		rxdv-skew-psec = <0>;
@@ -268,8 +271,11 @@
 	phy-mode = "mii";
 	status = "okay";
 
-	phy1: ethernet-phy@1 {
-		reg = <1>;
+	phy1: ethernet-phy@3 {
+		compatible = "ethernet-phy-id0022.1640",
+			     "ethernet-phy-ieee802.3-c22";
+		reg = <3>;
+		led-mode = <1>;
 		rxc-skew-psec = <2400>;
 		txc-skew-psec = <2400>;
 		rxdv-skew-psec = <0>;
@@ -439,8 +445,7 @@
 
 	usb0_pins: usb0 {
 		pinmux = <RZG2L_PORT_PINMUX(4, 0, 1)>, /* VBUS */
-			 <RZG2L_PORT_PINMUX(5, 0, 1)>, /* OVC */
-			 <RZG2L_PORT_PINMUX(5, 1, 1)>; /* OTG_ID */
+			 <RZG2L_PORT_PINMUX(5, 0, 1)>; /* OVC */
 	};
 
 	usb1_pins: usb1 {
@@ -465,7 +470,7 @@
 };
 
 &ehci0 {
-	dr_mode = "otg";
+	dr_mode = "host";
 	status = "okay";
 
 	memory-region = <&global_cma>;
@@ -478,7 +483,7 @@
 };
 
 &ohci0 {
-	dr_mode = "otg";
+	dr_mode = "host";
 	status = "okay";
 
 	memory-region = <&global_cma>;
@@ -521,7 +526,7 @@
 	pinctrl-0 = <&i2c2_pins>;
 	pinctrl-names = "default";
 	clock-frequency = <100000>;
-	status = "okay";
+	status = "disabled";
 };
 
 &i2c3 {
@@ -540,6 +545,8 @@
 &scif1 {
 	pinctrl-0 = <&scif1_pins>;
 	pinctrl-names = "default";
+	rs485-enabled;
+	rs485-gpios = <&pinctrl RZG2L_GPIO(40, 2) GPIO_ACTIVE_HIGH>;
 	status = "okay";
 };
 
@@ -558,14 +565,14 @@
 &scif4 {
 	pinctrl-0 = <&scif4_pins>;
 	pinctrl-names = "default";
+	rs485-enabled;
+	rs485-gpios = <&pinctrl RZG2L_GPIO(3, 0) GPIO_ACTIVE_HIGH>;
 	status = "okay";
 };
 
 &sci0 {
 	pinctrl-0 = <&sci0_pins>;
 	pinctrl-names = "default";
-	//rs485-sw-rts;
-	//gpios = <&pinctrl RZG2L_GPIO(15, 0) GPIO_ACTIVE_HIGH>;
 	status = "okay";
 };
 
@@ -614,16 +621,10 @@
 	};
 };
 
-&hsusb {
-	dr_mode = "otg";
-	status = "okay";
-};
-
 &usb2_phy0 {
 	pinctrl-0 = <&usb0_pins>;
 	pinctrl-names = "default";
 
-	vbus-supply = <&usb0_vbus_otg>;
 	status = "okay";
 };
 

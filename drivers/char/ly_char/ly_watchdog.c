@@ -106,7 +106,7 @@ static inline void poll_timer_func(struct timer_list *ptimer)
 
 static inline int watchdog_keepalive(void)
 {
-    pr_info("watchdog: keep alive\n");
+    // pr_debug("watchdog: keep alive\n");
 
     dog_keepalive = 0;
 
