@@ -142,57 +142,52 @@
 		compatible = "gpio-keys";
 		#address-cells = <1>;
 		#size-cells = <0>;
+		autorepeat;
 		status = "okay";
 
 		key-up {
-			wakeup-source;
 			interrupt-parent = <&pinctrl>;
-			interrupts = <RZG2L_GPIO(46, 0) IRQ_TYPE_LEVEL_HIGH>;
+			interrupts = <RZG2L_GPIO(46, 0) IRQ_TYPE_EDGE_FALLING>;
 			linux,code = <KEY_UP>;
 			debounce-interval = <10>;
 			label = "key_up";
 		};
 
 		key-left {
-			wakeup-source;
 			interrupt-parent = <&pinctrl>;
-			interrupts = <RZG2L_GPIO(46, 1) IRQ_TYPE_LEVEL_HIGH>;
+			interrupts = <RZG2L_GPIO(46, 1) IRQ_TYPE_EDGE_FALLING>;
 			linux,code = <KEY_LEFT>;
 			debounce-interval = <10>;
 			label = "key_left";
 		};
 
 		key-down {
-			wakeup-source;
 			interrupt-parent = <&pinctrl>;
-			interrupts = <RZG2L_GPIO(46, 2) IRQ_TYPE_LEVEL_HIGH>;
+			interrupts = <RZG2L_GPIO(46, 2) IRQ_TYPE_EDGE_FALLING>;
 			linux,code = <KEY_DOWN>;
 			debounce-interval = <10>;
 			label = "key_down";
 		};
 
 		key-right {
-			wakeup-source;
 			interrupt-parent = <&pinctrl>;
-			interrupts = <RZG2L_GPIO(46, 3) IRQ_TYPE_LEVEL_HIGH>;
+			interrupts = <RZG2L_GPIO(46, 3) IRQ_TYPE_EDGE_FALLING>;
 			linux,code = <KEY_RIGHT>;
 			debounce-interval = <10>;
 			label = "key_right";
 		};
 
 		key-enter {
-			wakeup-source;
 			interrupt-parent = <&pinctrl>;
-			interrupts = <RZG2L_GPIO(1, 1) IRQ_TYPE_LEVEL_HIGH>;
+			interrupts = <RZG2L_GPIO(1, 1) IRQ_TYPE_EDGE_FALLING>;
 			linux,code = <KEY_ENTER>;
 			debounce-interval = <10>;
 			label = "key_enter";
 		};
 
 		key-esc {
-			wakeup-source;
 			interrupt-parent = <&pinctrl>;
-			interrupts = <RZG2L_GPIO(1, 0) IRQ_TYPE_LEVEL_HIGH>;
+			interrupts = <RZG2L_GPIO(1, 0) IRQ_TYPE_EDGE_FALLING>;
 			linux,code = <KEY_ESC>;
 			debounce-interval = <10>;
 			label = "key_esc";
