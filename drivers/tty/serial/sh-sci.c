@@ -961,11 +961,11 @@ static void sci_receive_chars(struct uart_port *port)
 				if (status & SCxSR_FER(port)) {
 					flag = TTY_FRAME;
 					port->icount.frame++;
-					dev_notice(port->dev, "frame error\n");
+					// dev_notice(port->dev, "frame error\n");
 				} else if (status & SCxSR_PER(port)) {
 					flag = TTY_PARITY;
 					port->icount.parity++;
-					dev_notice(port->dev, "parity error\n");
+					// dev_notice(port->dev, "parity error\n");
 				} else
 					flag = TTY_NORMAL;
 
@@ -1006,7 +1006,7 @@ static int sci_handle_errors(struct uart_port *port)
 		if (tty_insert_flip_char(tport, 0, TTY_OVERRUN))
 			copied++;
 
-		dev_notice(port->dev, "overrun error\n");
+		// dev_notice(port->dev, "overrun error\n");
 	}
 
 	if (status & SCxSR_FER(port)) {
@@ -1016,7 +1016,7 @@ static int sci_handle_errors(struct uart_port *port)
 		if (tty_insert_flip_char(tport, 0, TTY_FRAME))
 			copied++;
 
-		dev_notice(port->dev, "frame error\n");
+		// dev_notice(port->dev, "frame error\n");
 	}
 
 	if (status & SCxSR_PER(port)) {
@@ -1026,7 +1026,7 @@ static int sci_handle_errors(struct uart_port *port)
 		if (tty_insert_flip_char(tport, 0, TTY_PARITY))
 			copied++;
 
-		dev_notice(port->dev, "parity error\n");
+		// dev_notice(port->dev, "parity error\n");
 	}
 
 	if (copied)
@@ -1703,7 +1703,7 @@ static void sci_request_dma(struct uart_port *port)
 		dma_addr_t dma;
 		void *buf;
 
-		s->buf_len_rx = 2 * max_t(size_t, 16, port->fifosize);
+		s->buf_len_rx = 2 * 100 * max_t(size_t, 16, port->fifosize);
 		buf = dma_alloc_coherent(chan->device->dev, s->buf_len_rx * 2,
 					 &dma, GFP_KERNEL);
 		if (!buf) {
@@ -2799,7 +2799,7 @@ done:
 	 */
 	s->rx_frame = (10000 * bits) / (baud / 100);
 #ifdef CONFIG_SERIAL_SH_SCI_DMA
-	s->rx_timeout = s->buf_len_rx * 2 * s->rx_frame;
+	s->rx_timeout = s->buf_len_rx * 2 * s->rx_frame / 100;
 	if (s->rx_timeout < 20)
 		s->rx_timeout = 20;
 #endif
