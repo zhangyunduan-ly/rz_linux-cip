@@ -103,37 +103,37 @@
 		compatible = "gpio-leds";
 
 		emled_run {
-			gpios = <&pinctrl RZG2L_GPIO(17, 0) GPIO_ACTIVE_HIGH>;
+			gpios = <&pinctrl RZG2L_GPIO(17, 0) GPIO_ACTIVE_LOW>;
 			label = "EMLED_RUN";
 			default-state = "on";
 			linux,default-trigger = "none";
 		};
 
 		emled_alarm {
-			gpios = <&pinctrl RZG2L_GPIO(16, 1) GPIO_ACTIVE_HIGH>;
+			gpios = <&pinctrl RZG2L_GPIO(16, 1) GPIO_ACTIVE_LOW>;
 			label = "EMLED_ALARM";
-			default-state = "on";
+			default-state = "off";
 			linux,default-trigger = "none";
 		};
 
 		emled_comm {
-			gpios = <&pinctrl RZG2L_GPIO(17, 1) GPIO_ACTIVE_HIGH>;
+			gpios = <&pinctrl RZG2L_GPIO(17, 1) GPIO_ACTIVE_LOW>;
 			label = "EMLED_COMM";
-			default-state = "on";
+			default-state = "off";
 			linux,default-trigger = "none";
 		};
 
 		emled_led2 {
-			gpios = <&pinctrl RZG2L_GPIO(15, 1) GPIO_ACTIVE_HIGH>;
+			gpios = <&pinctrl RZG2L_GPIO(15, 1) GPIO_ACTIVE_LOW>;
 			label = "EMLED_LED2";
-			default-state = "on";
+			default-state = "off";
 			linux,default-trigger = "none";
 		};
 
 		emled_led3 {
-			gpios = <&pinctrl RZG2L_GPIO(16, 0) GPIO_ACTIVE_HIGH>;
+			gpios = <&pinctrl RZG2L_GPIO(16, 0) GPIO_ACTIVE_LOW>;
 			label = "EMLED_LED3";
-			default-state = "on";
+			default-state = "off";
 			linux,default-trigger = "none";
 		};
 	};
