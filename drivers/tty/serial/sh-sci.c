@@ -1003,8 +1003,8 @@ static int sci_handle_errors(struct uart_port *port)
 		port->icount.overrun++;
 
 		/* overrun error */
-		if (tty_insert_flip_char(tport, 0, TTY_OVERRUN))
-			copied++;
+		// if (tty_insert_flip_char(tport, 0, TTY_OVERRUN)) 
+		// 	copied++;
 
 		// dev_notice(port->dev, "overrun error\n");
 	}
@@ -1013,8 +1013,8 @@ static int sci_handle_errors(struct uart_port *port)
 		/* frame error */
 		port->icount.frame++;
 
-		if (tty_insert_flip_char(tport, 0, TTY_FRAME))
-			copied++;
+		// if (tty_insert_flip_char(tport, 0, TTY_FRAME))
+		// 	copied++;
 
 		// dev_notice(port->dev, "frame error\n");
 	}
@@ -1023,8 +1023,8 @@ static int sci_handle_errors(struct uart_port *port)
 		/* parity error */
 		port->icount.parity++;
 
-		if (tty_insert_flip_char(tport, 0, TTY_PARITY))
-			copied++;
+		// if (tty_insert_flip_char(tport, 0, TTY_PARITY))
+		// 	copied++;
 
 		// dev_notice(port->dev, "parity error\n");
 	}
@@ -1054,11 +1054,11 @@ static int sci_handle_fifo_overrun(struct uart_port *port)
 
 		port->icount.overrun++;
 
-		tty_insert_flip_char(tport, 0, TTY_OVERRUN);
-		tty_flip_buffer_push(tport);
+		// tty_insert_flip_char(tport, 0, TTY_OVERRUN);
+		// tty_flip_buffer_push(tport);
 
-		dev_dbg(port->dev, "overrun error\n");
-		copied++;
+		// dev_dbg(port->dev, "overrun error\n");
+		// copied++;
 	}
 
 	return copied;
@@ -1077,8 +1077,8 @@ static int sci_handle_breaks(struct uart_port *port)
 		port->icount.brk++;
 
 		/* Notify of BREAK */
-		if (tty_insert_flip_char(tport, 0, TTY_BREAK))
-			copied++;
+		// if (tty_insert_flip_char(tport, 0, TTY_BREAK))
+		// 	copied++;
 
 		dev_dbg(port->dev, "BREAK detected\n");
 	}
@@ -1703,7 +1703,7 @@ static void sci_request_dma(struct uart_port *port)
 		dma_addr_t dma;
 		void *buf;
 
-		s->buf_len_rx = 2 * 100 * max_t(size_t, 16, port->fifosize);
+		s->buf_len_rx = 2 * max_t(size_t, 16, port->fifosize);
 		buf = dma_alloc_coherent(chan->device->dev, s->buf_len_rx * 2,
 					 &dma, GFP_KERNEL);
 		if (!buf) {
@@ -2799,9 +2799,9 @@ done:
 	 */
 	s->rx_frame = (10000 * bits) / (baud / 100);
 #ifdef CONFIG_SERIAL_SH_SCI_DMA
-	s->rx_timeout = s->buf_len_rx * 2 * s->rx_frame / 100;
-	if (s->rx_timeout < 20)
-		s->rx_timeout = 20;
+	s->rx_timeout = s->buf_len_rx * 2 * s->rx_frame;
+	if (s->rx_timeout < 20000)
+		s->rx_timeout = 20000;
 #endif
 
 	if ((termios->c_cflag & CREAD) != 0)
