@@ -6,6 +6,8 @@
 #include <linux/kernel.h>
 #include <linux/gpio.h>
 
+#define WDI_PIN 257
+
 static struct timer_list watchdog_timer;
 static int timer_index = 0;
 
@@ -27,9 +29,9 @@ static void poll_timer_func(struct timer_list *t)
 
     /* feed dog */
     if (timer_index % 2) {
-        gpio_set_value(433, 1); //high
+        gpio_set_value(WDI_PIN, 1); //high
     } else {
-        gpio_set_value(433, 0); //low
+        gpio_set_value(WDI_PIN, 0); //low
     }
 
     /* restart watchdog timer */
@@ -52,13 +54,13 @@ static ssize_t enable_store(struct device *dev, struct device_attribute *attr, c
 
     if (!status && early_watchdog_status) {
         early_watchdog_status = 0; 
-        gpio_set_value(433, 1); //high
+        gpio_set_value(WDI_PIN, 1); //high
         del_timer(&watchdog_timer);
     }    
     else if (status && !early_watchdog_status) {
         early_watchdog_status = status;
         timer_index = 0; 
-        gpio_set_value(433, 0); //low
+        gpio_set_value(WDI_PIN, 0); //low
         mod_timer(&watchdog_timer, jiffies + msecs_to_jiffies(500));
     }    
 
@@ -107,7 +109,7 @@ static int __init init_early_watchdog_timer(void)
 
     pr_info("Initializing early watchdog timer...\n");
 
-    gpio_direction_output(433, 1);
+    gpio_direction_output(WDI_PIN, 1);
 
     timer_setup(&watchdog_timer, poll_timer_func, 0);
 

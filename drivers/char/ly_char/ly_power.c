@@ -71,15 +71,17 @@
 #define POWER_SYSTEM_HALT      _IOW(POWER_MAGIC, 4, int) // 系统停止
 
 struct ly_power_dev {
-    struct gpio_desc *battery_gpios;    // battery gpio
-    struct gpio_desc *capacitor_gpios;  // capacitor gpio
-    struct gpio_desc *pfi_gpios;        // pfi gpio
-    unsigned int irq;                   // pfi irq
-    wait_queue_head_t wait_q;           // 定义等待队列头部
-    int poweroff_flag;                  // 等待条件
-    int rtnflag;                        // 用于判断是否read是否直接返回
-    int irqflag;                        // 等待队列唤醒后重新等待初始化等待队列标识
-    int wait_i;                         // 已进入等待标识
+    struct gpio_desc *battery_charge_gpios;         // 备用电池充电控制
+    struct gpio_desc *battery_discharge_gpios;      // 备用电池放电控制
+    struct gpio_desc *capacitor_charge_gpios;       // 超级电容充电控制
+    struct gpio_desc *capacitor_discharge_gpios;    // 超级电容放电控制
+    struct gpio_desc *pfi_gpios;                    // 掉电检测
+    unsigned int irq;                               // 掉电检测中断
+    wait_queue_head_t wait_q;                       // 定义等待队列头部
+    int poweroff_flag;                              // 等待条件
+    int rtnflag;                                    // 用于判断是否read是否直接返回
+    int irqflag;                                    // 等待队列唤醒后重新等待初始化等待队列标识
+    int wait_i;                                     // 已进入等待标识
 };
 
 static struct ly_power_dev *ly_power;
@@ -161,9 +163,9 @@ static long power_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
         data = arg;
 
         if (0 == data) {
-            gpiod_set_value(ly_power->battery_gpios, 0);
+            gpiod_set_value(ly_power->battery_charge_gpios, 0);
         } else {
-            gpiod_set_value(ly_power->battery_gpios, 1);
+            gpiod_set_value(ly_power->battery_charge_gpios, 1);
         }
 
         break;
@@ -172,9 +174,9 @@ static long power_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
         data = arg;
 
         if (0 == data) {
-            gpiod_set_value(ly_power->capacitor_gpios, 0);
+            gpiod_set_value(ly_power->capacitor_charge_gpios, 0);
         } else {
-            gpiod_set_value(ly_power->capacitor_gpios, 1);
+            gpiod_set_value(ly_power->capacitor_charge_gpios, 1);
         }
 
         break;
@@ -240,21 +242,35 @@ static int power_probe(struct platform_device *pdev)
         ret = -ENOMEM;
     }
 
-    /* battery gpio */
-	ly_power->battery_gpios = devm_gpiod_get(&pdev->dev, "battery", GPIOD_OUT_LOW);
-	if (IS_ERR(ly_power->battery_gpios)) {
-		pr_err("power: cannot get battery gpio\n");
-		return PTR_ERR(ly_power->battery_gpios);
+    /* battery charge gpio */
+	ly_power->battery_charge_gpios = devm_gpiod_get(&pdev->dev, "battery-charge", GPIOD_OUT_LOW);
+	if (IS_ERR(ly_power->battery_charge_gpios)) {
+		pr_err("power: cannot get battery charge gpio\n");
+		return PTR_ERR(ly_power->battery_charge_gpios);
 	}
 
-    /* cap-gpio */
-	ly_power->capacitor_gpios = devm_gpiod_get(&pdev->dev, "capacitor", GPIOD_OUT_LOW);
-	if (IS_ERR(ly_power->capacitor_gpios)) {
-		pr_err("power: cannot get capacitor gpio\n");
-		return PTR_ERR(ly_power->capacitor_gpios);
+    /* battery discharge gpio */
+	ly_power->battery_discharge_gpios = devm_gpiod_get(&pdev->dev, "battery-discharge", GPIOD_OUT_LOW);
+	if (IS_ERR(ly_power->battery_discharge_gpios)) {
+		pr_err("power: cannot get battery discharge gpio\n");
+		return PTR_ERR(ly_power->battery_discharge_gpios);
 	}
 
-    /* pfi-gpio */
+    /* capacitor charge gpio */
+	ly_power->capacitor_charge_gpios = devm_gpiod_get(&pdev->dev, "capacitor-charge", GPIOD_OUT_LOW);
+	if (IS_ERR(ly_power->capacitor_charge_gpios)) {
+		pr_err("power: cannot get capacitor charge gpio\n");
+		return PTR_ERR(ly_power->capacitor_charge_gpios);
+	}
+
+    /* capacitor discharge gpio */
+	ly_power->capacitor_discharge_gpios = devm_gpiod_get(&pdev->dev, "capacitor-discharge", GPIOD_OUT_LOW);
+	if (IS_ERR(ly_power->capacitor_discharge_gpios)) {
+		pr_err("power: cannot get capacitor charge gpio\n");
+		return PTR_ERR(ly_power->capacitor_discharge_gpios);
+	}
+
+    /* pfi gpio */
 	ly_power->pfi_gpios = devm_gpiod_get(&pdev->dev, "pfi", GPIOD_IN);
 	if (IS_ERR(ly_power->pfi_gpios)) {
 		pr_err("power: cannot get pfi gpio\n");

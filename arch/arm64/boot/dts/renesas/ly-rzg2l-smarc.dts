@@ -101,38 +101,60 @@
 
 	leds {
 		compatible = "gpio-leds";
+		status = "okay";
 
 		emled_run {
-			gpios = <&pinctrl RZG2L_GPIO(17, 0) GPIO_ACTIVE_LOW>;
+			gpios = <&pinctrl RZG2L_GPIO(39, 1) GPIO_ACTIVE_LOW>;
 			label = "EMLED_RUN";
 			default-state = "on";
 			linux,default-trigger = "none";
 		};
 
 		emled_alarm {
-			gpios = <&pinctrl RZG2L_GPIO(16, 1) GPIO_ACTIVE_LOW>;
+			gpios = <&pinctrl RZG2L_GPIO(39, 2) GPIO_ACTIVE_LOW>;
 			label = "EMLED_ALARM";
 			default-state = "off";
 			linux,default-trigger = "none";
 		};
 
+		emled_wifi {
+			gpios = <&pinctrl RZG2L_GPIO(39, 0) GPIO_ACTIVE_LOW>;
+			label = "EMLED_WIFI";
+			default-state = "off";
+			linux,default-trigger = "none";
+		};
+
 		emled_comm {
-			gpios = <&pinctrl RZG2L_GPIO(17, 1) GPIO_ACTIVE_LOW>;
+			gpios = <&pinctrl RZG2L_GPIO(1, 0) GPIO_ACTIVE_LOW>;
 			label = "EMLED_COMM";
 			default-state = "off";
 			linux,default-trigger = "none";
 		};
 
-		emled_led2 {
-			gpios = <&pinctrl RZG2L_GPIO(15, 1) GPIO_ACTIVE_LOW>;
-			label = "EMLED_LED2";
+		emled_net_2g {
+			gpios = <&pinctrl RZG2L_GPIO(46, 1) GPIO_ACTIVE_LOW>;
+			label = "EMLED_NET_2G";
 			default-state = "off";
 			linux,default-trigger = "none";
 		};
 
-		emled_led3 {
-			gpios = <&pinctrl RZG2L_GPIO(16, 0) GPIO_ACTIVE_LOW>;
-			label = "EMLED_LED3";
+		emled_net_3g {
+			gpios = <&pinctrl RZG2L_GPIO(46, 2) GPIO_ACTIVE_LOW>;
+			label = "EMLED_NET_3G";
+			default-state = "off";
+			linux,default-trigger = "none";
+		};
+
+		emled_net_4g {
+			gpios = <&pinctrl RZG2L_GPIO(46, 3) GPIO_ACTIVE_LOW>;
+			label = "EMLED_NET_4G";
+			default-state = "off";
+			linux,default-trigger = "none";
+		};
+
+		emled_plc {
+			gpios = <&pinctrl RZG2L_GPIO(1, 1) GPIO_ACTIVE_LOW>;
+			label = "EMLED_PLC";
 			default-state = "off";
 			linux,default-trigger = "none";
 		};
@@ -143,7 +165,7 @@
 		#address-cells = <1>;
 		#size-cells = <0>;
 		autorepeat;
-		status = "okay";
+		status = "disabled";
 
 		key-up {
 			interrupt-parent = <&pinctrl>;
@@ -202,20 +224,22 @@
 		lcd-CSB-gpios = <&pinctrl RZG2L_GPIO(45, 2) GPIO_ACTIVE_HIGH>;
 		lcd-RSTB-gpios = <&pinctrl RZG2L_GPIO(18, 0) GPIO_ACTIVE_HIGH>;
 		lcd-BL-gpios = <&pinctrl RZG2L_GPIO(45, 3) GPIO_ACTIVE_LOW>;
-		status = "okay";
+		status = "disabled";
 	};
 
 	ly_power {
 		compatible = "ly-power";
-		battery-gpios = <&pinctrl RZG2L_GPIO(14, 0) GPIO_ACTIVE_HIGH>;
-		capacitor-gpios = <&pinctrl RZG2L_GPIO(39, 2) GPIO_ACTIVE_HIGH>;
+		battery-charge-gpios = <&pinctrl RZG2L_GPIO(42, 4) GPIO_ACTIVE_HIGH>;
+		battery-discharge-gpios = <&pinctrl RZG2L_GPIO(42, 3) GPIO_ACTIVE_HIGH>;
+		capacitor-charge-gpios = <&pinctrl RZG2L_GPIO(5, 2) GPIO_ACTIVE_HIGH>;
+		capacitor-discharge-gpios = <&pinctrl RZG2L_GPIO(42, 2) GPIO_ACTIVE_HIGH>;
 		pfi-gpios = <&pinctrl RZG2L_GPIO(3, 1) GPIO_ACTIVE_HIGH>;
 		status = "okay";
 	};
 
 	ly_watchdog {
 		compatible = "ly-watchdog";
-		feed-gpios = <&pinctrl RZG2L_GPIO(39, 1) GPIO_ACTIVE_HIGH>;
+		feed-gpios = <&pinctrl RZG2L_GPIO(17, 1) GPIO_ACTIVE_HIGH>;
 		status = "okay";
 	};
 };
@@ -263,18 +287,18 @@
 	pinctrl-0 = <&eth1_pins>;
 	pinctrl-names = "default";
 	phy-handle = <&phy1>;
-	phy-mode = "mii";
+	phy-mode = "rgmii-id";
 	status = "okay";
 
 	phy1: ethernet-phy@3 {
-		compatible = "ethernet-phy-id0022.1640",
+		compatible = "ethernet-phy-id4f51.e91b",
 			     "ethernet-phy-ieee802.3-c22";
-		reg = <3>;
+		reg = <1>;
 		led-mode = <1>;
-		rxc-skew-psec = <2400>;
-		txc-skew-psec = <2400>;
+		rxc-skew-psec = <0>;
+		txc-skew-psec = <1800>;
 		rxdv-skew-psec = <0>;
-		txdv-skew-psec = <0>;
+		txen-skew-psec = <0>;
 		rxd0-skew-psec = <0>;
 		rxd1-skew-psec = <0>;
 		rxd2-skew-psec = <0>;
@@ -366,6 +390,18 @@
 		sd0_emmc_rst {
 			pins = "SD0_RST#";
 			power-source = <1800>;
+		};
+	};
+
+	sdhi1_pins: sd1 {
+		sd1_data {
+			pins = "SD1_DATA0", "SD1_DATA1", "SD1_DATA2", "SD1_DATA3";
+			power-source = <3300>;
+		};
+
+		sd1_ctrl {
+			pins = "SD1_CLK", "SD1_CMD";
+			power-source = <3300>;
 		};
 	};
 
@@ -508,6 +544,11 @@
 	pinctrl-names = "default";
 	clock-frequency = <100000>;
 	status = "okay";
+
+	rx8025t: rx8025t@32 {
+		compatible = "epson,rx8025t";
+		reg = <0x32>;
+	};
 };
 
 &i2c1 {
@@ -591,13 +632,33 @@
 	status = "okay";
 };
 
+&sdhi1 {
+	pinctrl-0 = <&sdhi1_pins>;
+	pinctrl-1 = <&sdhi1_pins>;
+	pinctrl-names = "default";
+	// pinctrl-names = "default", "state_uhs";
+	vmmc-supply = <&reg_3p3v>;
+	// vqmmc-supply = <&reg_3p3v>;
+	bus-width = <4>;
+	// disable-wp;
+	// no-mmc;
+	// no-sd;
+	non-removable;
+	// no-1-8-v;
+	// cap-sd-highspeed;
+	// sd-uhs-sdr50;
+	max-frequency = <4000000>;
+	status = "okay";
+};
+
 &spi0 {
 	pinctrl-0 = <&spi0_pins>;
 	pinctrl-names = "default";
-	spi-slave;
 	status = "okay";
-	spidev@0 {
+	spi1dev@0 {
 		compatible = "rohm,dh2228fv";
+		reg = <0>;
+		spi-max-frequency = <50000000>;
 		spi-cpha;
 		spi-cpol;
 	};
