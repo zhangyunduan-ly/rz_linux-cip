@@ -222,10 +222,33 @@ out:
 	return err;
 }
 
+#define RTC_SECPULSE_ON		_IO('p', 0x80)
+#define RTC_SECPULSE_OFF	_IO('p', 0x81)
+static int rx8025_ioctl(struct device *dev, unsigned int cmd, unsigned long arg)
+{
+	struct rx8025_data *rx8025 = dev_get_drvdata(dev);
+	u8 data[5] = {0x00, 0x08, 0x00, 0x00, 0x80};
+
+	switch (cmd) {
+	case RTC_SECPULSE_ON:
+		data[4] |= 0x20;
+		return rx8025_write_regs(rx8025->client, RX8025_REG_TC0, 5, data);
+		break;
+
+	case RTC_SECPULSE_OFF:
+		return rx8025_write_regs(rx8025->client, RX8025_REG_TC0, 5, data);
+		break;
+
+	default:
+		return -ENOIOCTLCMD;
+	}
+}
+
 /* only have base function, alarm function is not implemented yet */
 static struct rtc_class_ops rx8025_rtc_ops = {
 	.read_time = rx8025_get_time,
 	.set_time = rx8025_set_time,
+	.ioctl = rx8025_ioctl,
 };
 
 static int rx8025_get_ram(struct device *dev, char *pval)
