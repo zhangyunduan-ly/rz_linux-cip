@@ -28,6 +28,7 @@
 
 		i2c0 = &i2c0;
 		i2c1 = &i2c1;
+		i2c3 = &i2c3;
 
 		mmc0 = &sdhi0;
 		mmc1 = &sdhi1;
@@ -62,6 +63,19 @@
 			reusable;
 			reg = <0x00000000 0x68000000 0x0 0x8000000>;
 		};
+	};
+
+	mmngr {
+		compatible = "renesas,mmngr";
+		memory-region = <&mmp_reserved>;
+	};
+
+	mmngrbuf {
+		compatible = "renesas,mmngrbuf";
+	};
+
+	vspm_if {
+		compatible = "renesas,vspm_if";
 	};
 
 	reg_1p1v: regulator-vdd-core {
@@ -104,56 +118,56 @@
 		status = "okay";
 
 		emled_run {
-			gpios = <&pinctrl RZG2L_GPIO(39, 1) GPIO_ACTIVE_LOW>;
+			gpios = <&pinctrl RZG2L_GPIO(39, 1) GPIO_ACTIVE_HIGH>;
 			label = "EMLED_RUN";
 			default-state = "on";
 			linux,default-trigger = "none";
 		};
 
 		emled_alarm {
-			gpios = <&pinctrl RZG2L_GPIO(39, 2) GPIO_ACTIVE_LOW>;
+			gpios = <&pinctrl RZG2L_GPIO(39, 2) GPIO_ACTIVE_HIGH>;
 			label = "EMLED_ALARM";
 			default-state = "off";
 			linux,default-trigger = "none";
 		};
 
 		emled_wifi {
-			gpios = <&pinctrl RZG2L_GPIO(39, 0) GPIO_ACTIVE_LOW>;
+			gpios = <&pinctrl RZG2L_GPIO(39, 0) GPIO_ACTIVE_HIGH>;
 			label = "EMLED_WIFI";
 			default-state = "off";
 			linux,default-trigger = "none";
 		};
 
 		emled_comm {
-			gpios = <&pinctrl RZG2L_GPIO(1, 0) GPIO_ACTIVE_LOW>;
+			gpios = <&pinctrl RZG2L_GPIO(1, 0) GPIO_ACTIVE_HIGH>;
 			label = "EMLED_COMM";
 			default-state = "off";
 			linux,default-trigger = "none";
 		};
 
 		emled_net_2g {
-			gpios = <&pinctrl RZG2L_GPIO(46, 1) GPIO_ACTIVE_LOW>;
+			gpios = <&pinctrl RZG2L_GPIO(46, 1) GPIO_ACTIVE_HIGH>;
 			label = "EMLED_NET_2G";
 			default-state = "off";
 			linux,default-trigger = "none";
 		};
 
 		emled_net_3g {
-			gpios = <&pinctrl RZG2L_GPIO(46, 2) GPIO_ACTIVE_LOW>;
+			gpios = <&pinctrl RZG2L_GPIO(46, 2) GPIO_ACTIVE_HIGH>;
 			label = "EMLED_NET_3G";
 			default-state = "off";
 			linux,default-trigger = "none";
 		};
 
 		emled_net_4g {
-			gpios = <&pinctrl RZG2L_GPIO(46, 3) GPIO_ACTIVE_LOW>;
+			gpios = <&pinctrl RZG2L_GPIO(46, 3) GPIO_ACTIVE_HIGH>;
 			label = "EMLED_NET_4G";
 			default-state = "off";
 			linux,default-trigger = "none";
 		};
 
 		emled_plc {
-			gpios = <&pinctrl RZG2L_GPIO(1, 1) GPIO_ACTIVE_LOW>;
+			gpios = <&pinctrl RZG2L_GPIO(1, 1) GPIO_ACTIVE_HIGH>;
 			label = "EMLED_PLC";
 			default-state = "off";
 			linux,default-trigger = "none";
@@ -242,6 +256,11 @@
 		feed-gpios = <&pinctrl RZG2L_GPIO(17, 1) GPIO_ACTIVE_HIGH>;
 		status = "okay";
 	};
+
+	ly_ht7132 {
+		compatible = "ly-ht7132";
+		status = "okay";
+	};
 };
 
 &adc {
@@ -264,7 +283,7 @@
 	status = "okay";
 
 	phy0: ethernet-phy@3 {
-		compatible = "ethernet-phy-id0022.1640",
+		compatible = "ethernet-phy-id0000.0128",
 			     "ethernet-phy-ieee802.3-c22";
 		reg = <3>;
 		led-mode = <1>;
@@ -290,7 +309,7 @@
 	phy-mode = "rgmii-id";
 	status = "okay";
 
-	phy1: ethernet-phy@3 {
+	phy1: ethernet-phy@1 {
 		compatible = "ethernet-phy-id4f51.e91b",
 			     "ethernet-phy-ieee802.3-c22";
 		reg = <1>;
@@ -307,6 +326,9 @@
 		txd1-skew-psec = <0>;
 		txd2-skew-psec = <0>;
 		txd3-skew-psec = <0>;
+
+		interrupt-parent = <&pinctrl>;
+		interrupts = <RZG2L_GPIO(16, 0) IRQ_TYPE_LEVEL_LOW>;
 	};
 };
 
@@ -319,7 +341,7 @@
 };
 
 &ostm2 {
-	status = "disabled";
+	status = "okay";
 };
 
 &pinctrl {
@@ -355,24 +377,28 @@
 	};
 
 	eth1_pins: eth1 {
-		pinmux = <RZG2L_PORT_PINMUX(37, 0, 1)>, /* ET1_MDC */
-			 <RZG2L_PORT_PINMUX(37, 1, 1)>, /* ET1_MDIO */
-			 <RZG2L_PORT_PINMUX(29, 0, 1)>, /* ET1_TXC */
-			 <RZG2L_PORT_PINMUX(29, 1, 1)>, /* ET1_TX_CTL */
-			 <RZG2L_PORT_PINMUX(30, 0, 1)>, /* ET1_TXD0 */
-			 <RZG2L_PORT_PINMUX(30, 1, 1)>, /* ET1_TXD1 */
-			 <RZG2L_PORT_PINMUX(31, 0, 1)>, /* ET1_TXD2 */
-			 <RZG2L_PORT_PINMUX(31, 1, 1)>, /* ET1_TXD3 */
-			 <RZG2L_PORT_PINMUX(32, 0, 1)>, /* ETH1_TX_ERR */
-			 <RZG2L_PORT_PINMUX(32, 1, 1)>, /* ETH1_TX_COL */
-			 <RZG2L_PORT_PINMUX(33, 0, 1)>, /* ETH1_TX_CRS */
-			 <RZG2L_PORT_PINMUX(33, 1, 1)>, /* ET1_RXC */
-			 <RZG2L_PORT_PINMUX(34, 0, 1)>, /* ET1_RX_CTL */
-			 <RZG2L_PORT_PINMUX(34, 1, 1)>, /* ET1_RXD0 */
-			 <RZG2L_PORT_PINMUX(35, 0, 1)>, /* ET1_RXD1 */
-			 <RZG2L_PORT_PINMUX(35, 1, 1)>, /* ET1_RXD2 */
-			 <RZG2L_PORT_PINMUX(36, 0, 1)>, /* ET1_RXD3 */
-			 <RZG2L_PORT_PINMUX(36, 1, 1)>; /* ETH1_RX_ERR */
+		txc {
+			pinmux = <RZG2L_PORT_PINMUX(29, 0, 1)>; /* ET1_TXC */
+			power-source = <3300>;
+			output-enable;
+		};
+
+		mux {
+			pinmux = <RZG2L_PORT_PINMUX(37, 0, 1)>, /* ET1_MDC */
+					<RZG2L_PORT_PINMUX(37, 1, 1)>, /* ET1_MDIO */
+					<RZG2L_PORT_PINMUX(29, 1, 1)>, /* ET1_TX_CTL */
+					<RZG2L_PORT_PINMUX(30, 0, 1)>, /* ET1_TXD0 */
+					<RZG2L_PORT_PINMUX(30, 1, 1)>, /* ET1_TXD1 */
+					<RZG2L_PORT_PINMUX(31, 0, 1)>, /* ET1_TXD2 */
+					<RZG2L_PORT_PINMUX(31, 1, 1)>, /* ET1_TXD3 */
+					<RZG2L_PORT_PINMUX(33, 1, 1)>, /* ET1_RXC */
+					<RZG2L_PORT_PINMUX(34, 0, 1)>, /* ET1_RX_CTL */
+					<RZG2L_PORT_PINMUX(34, 1, 1)>, /* ET1_RXD0 */
+					<RZG2L_PORT_PINMUX(35, 0, 1)>, /* ET1_RXD1 */
+					<RZG2L_PORT_PINMUX(35, 1, 1)>, /* ET1_RXD2 */
+					<RZG2L_PORT_PINMUX(36, 0, 1)>; /* ET1_RXD3 */
+			power-source = <3300>;                                                                                                           
+		};
 	};
 
 	sdhi0_emmc_pins: sd0emmc {
@@ -421,8 +447,8 @@
 	};
 
 	i2c3_pins: i2c3 {
-		pinmux = <RZG2L_PORT_PINMUX(18, 0, 3)>, /* SDA */
-			 <RZG2L_PORT_PINMUX(18, 1, 3)>; /* SCL */
+		pinmux = <RZG2L_PORT_PINMUX(8, 1, 4)>, /* SDA */
+			 <RZG2L_PORT_PINMUX(8, 0, 4)>; /* SCL */
 	};
 
 	scif0_pins: scif0 {
@@ -461,10 +487,9 @@
 	};
 
 	spi0_pins: spi0 {
-		pinmux = <RZG2L_PORT_PINMUX(43, 0, 1)>,/* CK */
-			<RZG2L_PORT_PINMUX(43, 1, 1)>,/* MOSI */
-			<RZG2L_PORT_PINMUX(43, 2, 1)>,/* MISO */
-			<RZG2L_PORT_PINMUX(43, 3, 1)>;/* SSL */
+		pinmux = <RZG2L_PORT_PINMUX(43, 1, 1)>, /* MOSI */
+			 <RZG2L_PORT_PINMUX(43, 2, 1)>, /* MISO */
+			 <RZG2L_PORT_PINMUX(43, 3, 1)>; /* SSL */
 	};
 
 	spi1_pins: spi1 {
@@ -509,6 +534,7 @@
 
 &ehci1 {
 	status = "okay";
+	dr_mode = "host";
 
 	memory-region = <&global_cma>;
 };
@@ -521,6 +547,7 @@
 };
 
 &ohci1 {
+	dr_mode = "host";
 	status = "okay";
 
 	memory-region = <&global_cma>;
@@ -544,11 +571,6 @@
 	pinctrl-names = "default";
 	clock-frequency = <100000>;
 	status = "okay";
-
-	rx8025t: rx8025t@32 {
-		compatible = "epson,rx8025t";
-		reg = <0x32>;
-	};
 };
 
 &i2c1 {
@@ -569,7 +591,13 @@
 	pinctrl-0 = <&i2c3_pins>;
 	pinctrl-names = "default";
 	clock-frequency = <100000>;
-	status = "disabled";
+	status = "okay";
+
+	rx8025t: rx8025t@32 {
+		compatible = "epson,rx8025t";
+		reg = <0x32>;
+		status = "okay";
+	};
 };
 
 &scif0 {
@@ -582,7 +610,9 @@
 	pinctrl-0 = <&scif1_pins>;
 	pinctrl-names = "default";
 	rs485-enabled;
-	rs485-gpios = <&pinctrl RZG2L_GPIO(40, 2) GPIO_ACTIVE_HIGH>;
+	rs485-gpios = <&pinctrl RZG2L_GPIO(40, 2) GPIO_ACTIVE_LOW>;
+	/delete-property/ dmas;
+	/delete-property/ dma-names;
 	status = "okay";
 };
 
@@ -602,7 +632,9 @@
 	pinctrl-0 = <&scif4_pins>;
 	pinctrl-names = "default";
 	rs485-enabled;
-	rs485-gpios = <&pinctrl RZG2L_GPIO(3, 0) GPIO_ACTIVE_HIGH>;
+	rs485-gpios = <&pinctrl RZG2L_GPIO(3, 0) GPIO_ACTIVE_LOW>;
+	/delete-property/ dmas;
+	/delete-property/ dma-names;
 	status = "okay";
 };
 
@@ -634,33 +666,30 @@
 
 &sdhi1 {
 	pinctrl-0 = <&sdhi1_pins>;
-	pinctrl-1 = <&sdhi1_pins>;
 	pinctrl-names = "default";
-	// pinctrl-names = "default", "state_uhs";
 	vmmc-supply = <&reg_3p3v>;
-	// vqmmc-supply = <&reg_3p3v>;
+	vqmmc-supply = <&reg_3p3v>;
 	bus-width = <4>;
-	// disable-wp;
-	// no-mmc;
-	// no-sd;
+	disable-wp;
+	no-mmc;
+	no-sd;
 	non-removable;
-	// no-1-8-v;
-	// cap-sd-highspeed;
-	// sd-uhs-sdr50;
-	max-frequency = <4000000>;
+	no-1-8-v;
 	status = "okay";
 };
 
 &spi0 {
 	pinctrl-0 = <&spi0_pins>;
 	pinctrl-names = "default";
+	spi-slave;
+	cs-gpios = <0>;
 	status = "okay";
-	spi1dev@0 {
-		compatible = "rohm,dh2228fv";
+	slave {
+		compatible = "ly,ht7132";
 		reg = <0>;
+		cs-int-gpios = <&pinctrl RZG2L_GPIO(43, 0) GPIO_ACTIVE_LOW>;
 		spi-max-frequency = <50000000>;
-		spi-cpha;
-		spi-cpol;
+		status = "okay";
 	};
 };
 
@@ -673,7 +702,7 @@
 		reg = <0>;
 		spi-max-frequency = <50000000>;
 		spi-cpha; 
-		spi-cpol; 		
+		status = "okay";
 	};
 };
 
@@ -688,6 +717,10 @@
 	pinctrl-0 = <&usb1_pins>;
 	pinctrl-names = "default";
 
+	status = "okay";
+};
+
+&mtu3 {
 	status = "okay";
 };
 

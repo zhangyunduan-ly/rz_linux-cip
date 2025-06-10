@@ -120,6 +120,9 @@ static ssize_t power_read(struct file *filp, char __user *buf, size_t count, lof
     }
 
     if (cnt > (DELAY_CNT * 9 / 10)) {
+        gpiod_set_value(ly_power->battery_discharge_gpios, 0);
+        gpiod_set_value(ly_power->capacitor_discharge_gpios, 0);
+
         uc[0] = 0x01;
         if (ly_power->rtnflag) {
             if (ly_power->irqflag) {
@@ -213,20 +216,37 @@ static irqreturn_t poweroff_interrupt(int irq, void *dev_id)
 
     pr_info("poweroff interrupt\n");
 
-    // 消抖确认是否真的发生掉电
-    for (i = 0; i < DELAY_CNT; i++) {
+    // 短消抖去毛刺
+    for (i = 0; i < DELAY_CNT1; i++) {
         udelay(1);
         if (gpiod_get_value(ly_power->pfi_gpios) == 0) {
             cnt++;
         }
     }
 
-    if (cnt > (DELAY_CNT * 9 / 10)) {
-        pr_info("poweroff interrupt actual\n");
-        ly_power->poweroff_flag = 1;
-        wake_up_interruptible(&ly_power->wait_q); // 中断唤醒
-        disable_irq_nosync(irq);
-        ly_power->irqflag = 1;
+    if (cnt > (DELAY_CNT1 * 9 / 10)) {
+        // 先打开超级电容和电池
+        gpiod_set_value(ly_power->battery_discharge_gpios, 1);
+        gpiod_set_value(ly_power->capacitor_discharge_gpios, 1);
+
+        // 长消抖确认是否真的发生掉电
+        for (i = DELAY_CNT1; i < DELAY_CNT; i++) {
+            udelay(1);
+            if (gpiod_get_value(ly_power->pfi_gpios) == 0) {
+                cnt++;
+            }
+        }
+
+        if (cnt > (DELAY_CNT * 9 / 10)) {
+            pr_info("poweroff interrupt actual\n");
+            ly_power->poweroff_flag = 1;
+            wake_up_interruptible(&ly_power->wait_q); // 中断唤醒
+            disable_irq_nosync(irq);
+            ly_power->irqflag = 1;
+        } else {
+            gpiod_set_value(ly_power->battery_discharge_gpios, 0);
+            gpiod_set_value(ly_power->capacitor_discharge_gpios, 0);
+        }
     }
 
     return IRQ_RETVAL(IRQ_HANDLED);
