@@ -41,6 +41,14 @@
 		stdout-path = "serial0:115200n8";
 	};
 
+	firmware {
+		optee {
+			compatible = "linaro,optee-tz";
+			method = "smc";
+			status = "okay";
+		};
+	};
+
 	memory@48000000 {
 		device_type = "memory";
 		/* first 128MB is reserved for secure area. */
@@ -487,7 +495,8 @@
 	};
 
 	spi0_pins: spi0 {
-		pinmux = <RZG2L_PORT_PINMUX(43, 1, 1)>, /* MOSI */
+		pinmux = <RZG2L_PORT_PINMUX(43, 0, 1)>, /* CK */
+			 <RZG2L_PORT_PINMUX(43, 1, 1)>, /* MOSI */
 			 <RZG2L_PORT_PINMUX(43, 2, 1)>, /* MISO */
 			 <RZG2L_PORT_PINMUX(43, 3, 1)>; /* SSL */
 	};
@@ -682,13 +691,12 @@
 	pinctrl-0 = <&spi0_pins>;
 	pinctrl-names = "default";
 	spi-slave;
-	cs-gpios = <0>;
 	status = "okay";
 	slave {
-		compatible = "ly,ht7132";
+		compatible = "rohm,dh2228fv";
 		reg = <0>;
-		cs-int-gpios = <&pinctrl RZG2L_GPIO(43, 0) GPIO_ACTIVE_LOW>;
 		spi-max-frequency = <50000000>;
+		spi-cpha;
 		status = "okay";
 	};
 };
