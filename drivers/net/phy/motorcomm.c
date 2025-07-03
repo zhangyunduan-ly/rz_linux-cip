@@ -723,7 +723,8 @@
  
  static int yt8512_led_init(struct phy_device *phydev)
  {
-	 int ret;
+#if 0
+	int ret;
 	 int val;
 	 int mask;
  
@@ -752,6 +753,14 @@
 	 val &= ~mask;
  
 	 ret = ytphy_write_ext(phydev, YT8512_EXTREG_LED1, val);
+#endif
+	int ret;
+	int val;
+
+	val = 0x0311;
+	ret = ytphy_write_ext(phydev, YT8512_EXTREG_LED0, val);
+	val = 0x0320;
+	ret = ytphy_write_ext(phydev, YT8512_EXTREG_LED1, val);
  
 	 return ret;
  }
